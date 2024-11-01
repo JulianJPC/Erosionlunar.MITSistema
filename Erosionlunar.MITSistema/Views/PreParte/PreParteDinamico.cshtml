@@ -1,0 +1,149 @@
+﻿@model List<Erosionlunar.MITSistema.Models.MailModel>
+
+<form id="preParteForm" asp-action="PreParteDinamico" asp-controller="PreParte" method="post">
+    <div class="form-group">
+        <label>Accion</label>
+        <select id="dropdown" name="accion" class="form-select">
+            <option value="0">Mover En Disco</option>
+            <option value="1">Mover a Parte</option>
+            <option value="2">Crear Parte Y Mover</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="numberInput">Numero Parte:</label>
+        <input type="text" id="numberInput" name="numberInput" class="form-control" pattern="[0-9]*" required value="0" />
+    </div>
+    <div class="form-group">
+        <label for="pathInput">Direccion a Copiar Mails en Disco:</label>
+        <input type="text" id="pathInput" name="pathInput" class="form-control" value="-" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Subir</button>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                Check
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Tema
+            </th>
+            <th>
+                FROM
+            </th>
+            <th>
+                TO y CC
+            </th>
+            <th>
+                Ver Mensaje
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" class="mailCheckbox" data-index="@i" />
+                        <input type="hidden" name="losMails[@i]Id" value="@Model[i].idV" />
+                        <input type="hidden" name="losMails[@i]pathEnDisco" value="@Model[i].pathEnDiscoV" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model[i].fechaV)
+                        <input type="hidden" name="losMails[@i]fecha" value="@Model[i].fechaV" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model[i].temaV)
+                </td>
+                <td>
+                    @for(int j = 0; j < Model[i].emailsYNombresFROMV.Count; j++)
+                    {
+                            <p>@Model[i].emailsYNombresFROMV[j]</p>
+                    }
+                </td>
+                <td>
+                    @for (int j = 0; j < Model[i].emailsYNombresTOV.Count; j++)
+                    {
+                            <p>@Model[i].emailsYNombresTOV[j]</p>
+                    }
+                    @for (int j = 0; j < Model[i].emailsYNombresCCV.Count; j++)
+                    {
+                            <p>@Model[i].emailsYNombresCCV[j]</p>
+                    }
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mailModal-@i">
+                        View Message
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="mailModal-@i" tabindex="-1" aria-labelledby="mailModalLabel-@i" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="mailModalLabel-@i">@Model[i].temaV</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Display the message content -->
+                                    <p>@Model[i].mensajeV</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }  
+    </tbody>
+</table>
+</form>
+<script>
+    document.getElementById('preParteForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the selected value from the dropdown
+        var selectedValue = document.getElementById('dropdown').value;
+
+        // Update the form action to append the selected value and number input to the URL
+        var formAction = '/PreParte/PreParteDinamico/' + selectedValue;
+        this.action = formAction;
+        var indiceQueVan = 0;
+        // Get all the checkboxes
+        var checkboxes = document.querySelectorAll('.mailCheckbox');
+
+        // Iterate over checkboxes and enable/disable hidden inputs based on selection
+        checkboxes.forEach(function (checkbox) {
+            var index = checkbox.getAttribute('data-index');
+            var mailInputs = document.querySelectorAll('[name^="losMails[' + index + ']"]');
+
+            // If the checkbox is checked, enable the hidden fields by removing the "disabled" attribute
+            var sumarSiguiente = false;
+            mailInputs.forEach(function (input) {
+
+                if (checkbox.checked) {
+                    input.removeAttribute('disabled');  // Enable
+                    var currentName = input.getAttribute('name');
+                    var newName = currentName.replace(/\[\d+\]/, '[' + indiceQueVan + ']');
+                    input.setAttribute('name', newName);
+                    sumarSiguiente = true;
+                } else if(!checkbox.checked) {
+                    input.disabled = true;  // Disable
+                }
+            });
+            if(sumarSiguiente){
+                indiceQueVan++;
+            }
+            
+        });
+
+        // Use a timeout to ensure the inputs are enabled before submitting
+        setTimeout(() => {
+            this.submit();
+        }, 100);  // A small delay to ensure all fields are updated
+    });
+</script>

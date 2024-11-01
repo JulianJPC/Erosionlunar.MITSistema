@@ -1,0 +1,71 @@
+﻿@model Erosionlunar.MITSistema.Models.PartesFixModel
+
+@{
+    ViewData["Title"] = "Parte Editar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Editar Parte</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="PartesEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="idParteV" />
+            <div class="form-group">
+                <label asp-for="idTipoParteV" class="control-label"></label>
+                <input asp-for="idTipoParteV" class="form-control" />
+                <span asp-validation-for="idTipoParteV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="idEmpresaV" class="control-label"></label>
+                <input asp-for="idEmpresaV" class="form-control" />
+                <span asp-validation-for="idEmpresaV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="numeroPV" class="control-label"></label>
+                <input asp-for="numeroPV" class="form-control" />
+                <span asp-validation-for="numeroPV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaPV" class="control-label"></label>
+                <input asp-for="FechaPV" type="date" class="form-control" value="@(Model.FechaPV.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="FechaPV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ComentarioV" class="control-label"></label>
+                <input asp-for="ComentarioV" class="form-control" />
+                <span asp-validation-for="ComentarioV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinatariosDireccionV" class="control-label"></label>
+                <input asp-for="DestinatariosDireccionV" class="form-control" />
+                <span asp-validation-for="DestinatariosDireccionV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinatariosEmailV" class="control-label"></label>
+                <input asp-for="DestinatariosEmailV" class="form-control" />
+                <span asp-validation-for="DestinatariosEmailV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinatariosV" class="control-label"></label>
+                <input asp-for="DestinatariosV" class="form-control" />
+                <span asp-validation-for="DestinatariosV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="PartesLista">Volver a Lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

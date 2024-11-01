@@ -1,0 +1,138 @@
+﻿@model Erosionlunar.MITSistema.Models.PartesFixModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Detalles Parte</h1>
+<hr />
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.idParteV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.idParteV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.nombreEV) 
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.nombreEV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.numeroPV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.numeroPV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FechaPV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FechaPV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DestinatariosDireccionV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DestinatariosDireccionV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DestinatariosEmailV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DestinatariosEmailV)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DestinatariosV)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DestinatariosV)
+        </dd>
+    </dl>
+</div>
+
+
+@for(int i = 0; i< Model.getCantidadMOs(); i++)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Model.getByIndiceNombreMO(i)
+                </th>
+                <th>
+                    @Model.getByIndicePreiodoMO(i)
+                </th>
+                <th>
+                    Folio Inicial
+                </th>
+                <th>
+                    Folio Final
+                </th>
+                <th>
+                    Hash
+                </th>
+                <th>
+                    Asiento Inicial
+                </th>
+                <th>
+                    Asiento Final
+                </th>
+            </tr>
+        </thead>
+        @for(int j = 0; j < Model.getQAdeMO(i); j++)
+        {
+            <tbody>
+            <tr>
+                <td>
+                    @Model.getNLAdeMO(i,j)
+                </td>
+                <td>
+                    @Model.getFAdeMO(i, j)
+                </td>
+                <td>
+                    @Model.getFIAdeMO(i, j)
+                </td>
+                <td>
+                    @Model.getFFAdeMO(i, j)
+                </td>
+                <td>
+                    @Model.getHAdeMO(i, j)
+                </td>
+                <td>
+                    @{
+                        string folioI = "-";
+                        string folioF = "-";
+                    }
+                    @if (Model.getAFAdeMO(i, j) > 20)
+                    {
+                        folioI = @Model.getAIAdeMO(i, j).ToString();
+                        folioF = @Model.getAFAdeMO(i, j).ToString();
+                    }
+                    @folioI
+                </td>
+                <td>
+                    @folioF
+                </td>
+            </tr>
+            </tbody>
+        }
+    </table>
+}
+
+@foreach(string unMensaje in @Model.darMensajesMails())
+{
+    <p>
+        @unMensaje
+    </p>
+    <hr />
+}
+
+
+<div>
+    <a asp-action="PartesEdit" asp-route-id="@Model?.idParteV">Editar</a> |
+    <a asp-action="PartesList">Volver a Lista</a>
+</div>

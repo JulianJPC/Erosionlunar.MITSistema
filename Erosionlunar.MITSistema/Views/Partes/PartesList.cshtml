@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Erosionlunar.MITSistema.Models.PartesFixModel>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.numeroPV)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nombreCortoEV)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaPV)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.numeroPV)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nombreCortoEV)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPV)
+                </td>
+                <td>
+                    <a asp-action="PartesEdit" asp-route-id="@item.idParteV">Editar</a> |
+                    <a asp-action="PartesDetail" asp-route-id="@item.idParteV">Detalles</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

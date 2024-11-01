@@ -1,0 +1,140 @@
+﻿@model Erosionlunar.MITSistema.Models.PreParteFixModel
+
+@{
+    ViewData["Title"] = "PreParte Editar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>PreParte Editar</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="PreParteEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="idPreParteV" />
+            <div class="form-group">
+                <label asp-for="numeroPV" class="control-label"></label>
+                <input asp-for="numeroPV" class="form-control" />
+                <span asp-validation-for="numeroPV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="fechaRecibidoV" class="control-label"></label>
+                <input asp-for="fechaRecibidoV" type="date" class="form-control" value="@(Model.fechaRecibidoV.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="fechaRecibidoV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="idEmpresaV" class="control-label"></label>
+                <input asp-for="idEmpresaV" class="form-control" />
+                <span asp-validation-for="idEmpresaV" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="padding-bottom:2px">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID Contacto</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mailList">
+                        @{
+                            List<int> losIdNyE = Model.idsNyMMailsParaV();
+                            List<int> losIdMail = Model.idsMailsParaV();
+                        }
+                        @for (int i = 0; i < losIdNyE.Count; i++)
+                        {
+                            <tr id="mailRow_@i">
+                                <td>
+                                    <input type="text" name="losIdNyE[@i]" value="@losIdNyE[i]" class="form-control" />
+                                        <input type="hidden" name="losIdMail[@i]" value="@losIdMail[i]" class="form-control" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" onclick="removeMail(@i)">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <button type="button" class="btn btn-success" onclick="addMail()" >+Email</button>
+            </div>
+            <div class="form-group">
+                <input type="submit"  value="Guardar" class="btn btn-primary" />
+            </div>
+            
+            
+        </form>
+    </div>
+    <div class="col-md-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Contacto</th>
+                    <th>Contacto</th>
+                </tr>
+            </thead>
+            <tbody id="mailList">
+        @foreach(var element in ViewBag.contactosMail)
+        {
+                <tr>
+                    <td>
+                            <label>@element.IdInformacionEmpresa</label>
+                    </td>
+                    <td>
+                            <label>@element.Informacion</label>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver a Lista</a>
+</div>
+
+<script>
+    let mailCount = @Model.idsMailsParaV().Count;
+    const valorOriginal = @Model.idsMailsParaV().Count;
+    function addMail() {
+        let newRow = `
+                    <tr id="mailRow_${mailCount}">
+                        <td>
+                            <input type="text" name="losIdNyE[${mailCount}]" class="form-control" />
+                            <input type="hidden" name="losIdMail[${mailCount}]" value="0" class="form-control" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger" onclick="removeMail(${mailCount})">Eliminar</button>
+                        </td>
+                    </tr>`;
+
+        document.getElementById("mailList").insertAdjacentHTML('beforeend', newRow);
+        mailCount++;
+    }
+
+    function removeMail(index) {
+        document.getElementById("mailRow_" + index).remove();
+        updateMailIndices(index);
+    }
+    function updateMailIndices(startIndex) {
+    // Get all mail rows after the removed index
+    let rows = document.querySelectorAll("#mailList tr");
+    for (let i = startIndex; i < rows.length; i++) {
+        // Update the ID and name attributes for each input in the row
+        rows[i].id = `mailRow_${i}`; // Update row id
+
+        let inputs = rows[i].getElementsByTagName("input");
+        for (let j = 0; j < inputs.length; j++) {
+            inputs[j].name = inputs[j].name.replace(/\[\d+\]$/, `[${i}]`); // Update name
+        }
+    }
+
+    // Decrement the mailCount if necessary
+    mailCount--;
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

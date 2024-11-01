@@ -1,0 +1,42 @@
+﻿@model Erosionlunar.MITSistema.Models.PreParteFixModel
+
+@{
+    ViewData["Title"] = "Creación PreParte";
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>PreParte Nuevo</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="PreParteNew" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="numeroPV" class="control-label"></label>
+                <input asp-for="numeroPV" class="form-control" />
+                <span asp-validation-for="numeroPV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="fechaRecibidoV" class="control-label"></label>
+                <input asp-for="fechaRecibidoV" type="date" class="form-control" value="@(Model.fechaRecibidoV.ToString("yyyy-MM-dd"))" />
+                <span asp-validation-for="fechaRecibidoV" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="idEmpresaV">Seleccionar Empresa</label>
+                <select asp-for="idEmpresaV" asp-items="@(ViewBag.empresas as SelectList)" class="form-control" id="empresaDropdown">
+                    <option value="-1">-- Seleccionar empresa --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

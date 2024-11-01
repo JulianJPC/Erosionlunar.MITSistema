@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Erosionlunar.MITSistema.Models.PreParteFixModel>
+
+@{
+    ViewData["Title"] = "Lista PrePartes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista PrePartes</h1>
+
+<p>
+    <a asp-action="PreParteNew">Crear PreParte</a>
+</p>
+
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.numeroPV)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fechaRecibidoV)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nCortoEV)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.numeroPV)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fechaRecibidoV)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nCortoEV)
+            </td>
+            <td>
+                <a asp-action="PreParteEdit" asp-route-id="@item.idPreParteV">Editar</a> |
+                <a asp-action="PreParteDetail" asp-route-id="@item.idPreParteV">Detalles</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

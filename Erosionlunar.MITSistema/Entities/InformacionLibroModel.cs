@@ -8,7 +8,7 @@ namespace Erosionlunar.MITSistema.Entities
         public int? IdInformacionLibro { get; set; }
         public int? IdLibro { get; set; }
         public int? IdTipoInformacion { get; set; }
-        public string? Infromacion { get; set; }
+        public string? Informacion { get; set; }
         public int? Activo { get; set; }
         public InformacionLibroModel() { }
     }

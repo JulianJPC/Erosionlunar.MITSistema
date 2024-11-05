@@ -1,0 +1,68 @@
+﻿@model List<List<string>>
+
+@{
+    ViewData["Title"] = "Procesar Carpeta 2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista Archivos en Carpeta</h1>
+<form id="procesoForm" asp-action="ProcesarCarpeta2" asp-controller="Procesos" method="post">
+    <button type="submit" class="btn btn-primary">Subir</button>
+    <input type="hidden" name="idEmpresa" value="@ViewBag.idEmpresa" />
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Nombre Corto
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th>
+                    Parte
+                </th>
+                <th>
+                    Terminación
+                </th>
+                <th>
+                    Archivos
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model[1].Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select class="form-control" id="nombreDropdown" name="nombreC[@i]">
+                            @for(int j = 0; j < Model[0].Count; j++)
+                            {
+                                if (Model[0][j] == Model[1][i])
+                                {
+                                    <option value="@Model[0][j]" selected="selected">@Model[0][j]</option>
+                                }
+                                else
+                                {
+                                    <option value="@Model[0][j]">@Model[0][j]</option>
+                                }
+                            }
+                        </select>
+                    </td>
+
+                    <td>
+                        <input type="text" name="fecha[@i]" value="@Model[2][i]"/>
+                    </td>
+                    <td>
+                        <input type="text" name="parte[@i]" value="0" />
+                    </td>
+                    <td>
+                        <input type="text" name="term[@i]" value="@Model[3][i]" />
+                    </td>
+                    <td>
+                        <input type="text" name="unPath[@i]" value="@Model[4][i]" style="width: 100%; font-size: 9px" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

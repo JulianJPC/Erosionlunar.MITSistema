@@ -11,5 +11,6 @@ namespace Erosionlunar.MITSistema.Entities
         public string? NombreE { get; set; }
         public string? NombreCortoE { get; set; }
         public int? IEjercicioE { get; set; }
+        public int activo { get; set; }
     }
 }

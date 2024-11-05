@@ -1,0 +1,83 @@
+﻿@model List<List<string>>
+
+@{
+    ViewData["Title"] = "Lista PrePartes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista Carpetas Partes</h1>
+<form id="visspoolForm" asp-action="convertirVisspool" asp-controller="Procesos" method="post">
+    <button type="submit" class="btn btn-primary">Subir</button>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Seleccionar
+                </th>
+                <th>
+                    Direccion
+                </th>
+                <th>
+                    Nombre Empresa
+                </th>
+                <th>
+                    Archivos
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" class="carpetaCheckBox" data-index="@i" />
+                    </td>
+                    <td>
+                        <input type="text" disabled="disabled" name="dire" value="@Model[i][0]" />
+                    </td>
+                    <td>
+                        <input type="text" disabled="disabled" name="NombreE" value="@Model[i][1]" />
+                    </td>
+                    <td>
+                        @for (int j = 2; j < Model[i].Count; j++)
+                        {
+                            <p>@Model[i][j]</p>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select all checkboxes with the class 'carpetaCheckBox'
+            const checkboxes = document.querySelectorAll(".carpetaCheckBox");
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("click", function () {
+                    // Uncheck all checkboxes except the one that was just clicked
+                    checkboxes.forEach(cb => {
+                        if (cb !== this) cb.checked = false;
+                    });
+                });
+            });
+
+            // On form submission, disable all rows except the checked one
+            document.getElementById("procesoForm").addEventListener("submit", function (event) {
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest("tr");
+                    if (!checkbox.checked) {
+                        // Disable all inputs in the row if the checkbox is not checked
+                        row.querySelectorAll("input").forEach(input => input.disabled = true);
+                    }
+                    else{
+                        row.querySelectorAll("input").forEach(input => input.disabled = false);
+                    }
+                });
+            });
+        });
+    </script>
+}

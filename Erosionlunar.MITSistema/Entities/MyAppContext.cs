@@ -22,5 +22,7 @@ namespace Erosionlunar.MITSistema.Entities
         public DbSet<InformacionLibroModel> InformacionLibro { get; set; }
         public DbSet<LibrosModel> Libros { get; set; }
         public DbSet<MainFrameModel> MainFrame { get; set; }
+        public DbSet<ArchivosFechasModel> archivosFechas { get; set; }
+        public DbSet<regexLibrosModel> regexLibros { get; set; }
     }
 }

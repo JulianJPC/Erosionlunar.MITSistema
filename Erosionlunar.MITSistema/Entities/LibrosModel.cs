@@ -10,6 +10,7 @@ namespace Erosionlunar.MITSistema.Entities
         public string? NombreL { get; set; }
         public string? NombreArchivoL { get; set; }
         public string? Codificacion { get; set; }
+        public int activo { get; set; }
         public LibrosModel() { }
     }
 }

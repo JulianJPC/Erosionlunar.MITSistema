@@ -150,7 +150,7 @@ namespace Erosionlunar.MITSistema.Controllers
             bool esNull = false;
 
             
-            for (int i = 0; i < 1000 & esNull == false; i++)
+            for (int i = 0; i < 1000 && esNull == false; i++)
             {
                 string? unNombreC = Request.Form[$"nombreC[{i}]"];
                 string? unaFecha = Request.Form[$"fecha[{i}]"];
@@ -184,10 +184,15 @@ namespace Erosionlunar.MITSistema.Controllers
             //Ordenar Lista
             listaProcesadores = listaProcesadores.OrderBy(obj => obj.getFecha()).ToList();
             //Modificar
-            foreach(ABSProcesador unProce in listaProcesadores)
+            var archivoDB = new List<ArchivosModel>();
+            var archivosFechasDB = new List<ArchivosFechasModel>();
+            int newIdA = getLastIdArchivo()+1;
+            int newIdF = _context.archivosFechas.Max(c => c.idArchivo) + 1;
+            foreach (ABSProcesador unProce in listaProcesadores)
             {
                 //IdArchivo
-                unProce.setIdArchivo(getLastIdArchivo() + 1);
+                unProce.setIdArchivo(newIdA);
+                newIdA++;
                 //Folios y asientos y Regex
                 bool necesitaTraer = unProce.necesitaFolios();
                 if (necesitaTraer)
@@ -201,15 +206,31 @@ namespace Erosionlunar.MITSistema.Controllers
                 unProce.modificarArchivo();
                 var elArchivoModel = unProce.produceAModel();
                 var laFechaArchivo = new ArchivosFechasModel();
-                laFechaArchivo.IdArchivosFechas = _context.archivosFechas.Max(c => c.idArchivo) + 1;
+                laFechaArchivo.IdArchivosFechas = newIdF;
+                newIdF++;
                 laFechaArchivo.fecha = unProce.getFecha();
                 laFechaArchivo.idLibro = unProce.getIdLibro();
                 laFechaArchivo.idArchivo = unProce.getIdArchivo();
-                _context.Archivos.Add( elArchivoModel );
-                _context.archivosFechas.Add(laFechaArchivo);
+                archivoDB.Add( elArchivoModel );
+                archivosFechasDB.Add(laFechaArchivo);
             }
-
-
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    _context.AddRange(archivoDB);
+                    _context.AddRange(archivosFechasDB);
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    
+                }
+                catch (Exception ex)
+                {
+                    // Roll back the transaction if there's an error
+                    transaction.Rollback();
+                    return View("MyError", ex.Message);
+                }
+            }
             return View("ProcesarCarpeta3", listaProcesadores);
         }
         [HttpPost]
@@ -236,6 +257,7 @@ namespace Erosionlunar.MITSistema.Controllers
                 var listaArchivos = new List<ArchivosModel>();
                 var archivosEnCarpetaRaw = Directory.GetFiles(Path.Combine(direccion, "txt")).ToList();
 
+
                 for (int i = 0; i < archivosEnCarpetaRaw.Count; i++)
                 {
                     string elHash = CalculateMD5(archivosEnCarpetaRaw[i]);
@@ -255,7 +277,7 @@ namespace Erosionlunar.MITSistema.Controllers
                     string nuevoHash = visspoolizador.Visspool(archivosEnCarpetaRaw[i], listaArchivos[i], listaRegexLineas[i], listaNombres[i]);
                     listaArchivos[i].HashA = nuevoHash;
                 }
-                //_context.SaveChanges();
+                _context.SaveChanges();
                 return View("Index");
             }
             return View("MyError", "La Direccion a buscar los archivos no existe.");
@@ -274,8 +296,32 @@ namespace Erosionlunar.MITSistema.Controllers
                     carpetasConTxt.Add(unaCarpeta);
                 }
             }
-
-            foreach (string unaCarpeta in carpetasConTxt)
+            var carpetasProcesadas = new List<string>();
+            foreach (string unaCarpeta in carpetasConTxt) 
+            {
+                var archivosEnCarpetaTxt = Directory.GetFiles(Path.Combine(unaCarpeta, "txt")).ToList();
+                bool estanEnBD = true;
+                
+                var losHashes = new List<string>();
+                foreach(string unArch in archivosEnCarpetaTxt)
+                {
+                    losHashes.Add(CalculateMD5(unArch));
+                }
+                foreach(string unHash in losHashes)
+                {
+                    var elArch = _context.Archivos.AsNoTracking().FirstOrDefault(c => c.HashA == unHash && c.IdMedioOptico == 0);
+                    if (elArch == null) { estanEnBD = false; }
+                }
+                if (archivosEnCarpetaTxt.Count < 1)
+                {
+                    estanEnBD = false;
+                }
+                if (estanEnBD)
+                {
+                    carpetasProcesadas.Add(unaCarpeta);
+                }
+            }
+            foreach (string unaCarpeta in carpetasProcesadas)
             {
                 var infoCarpeta = new List<string>();
                 var archivosEnCarpetaRaw = Directory.GetFiles(Path.Combine(unaCarpeta, "txt")).ToList();

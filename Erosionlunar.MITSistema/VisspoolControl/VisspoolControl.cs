@@ -31,8 +31,6 @@ namespace Erosionlunar.MITSistema.VisspoolControl
             dirTestNew = lasDirs[7];
             provider = "Provider=Microsoft.Jet.OLEDB.4.0; ";
         }
-        // "Provider=Microsoft.Jet.OLEDB.4.0; "
-        // "Provider=Microsoft.ACE.OLEDB.12.0;"
         private void executeToMDB(string pathMdb, string query)
         {
             OleDbConnection con = new OleDbConnection(provider + "Data Source = " + pathMdb);
@@ -91,7 +89,9 @@ namespace Erosionlunar.MITSistema.VisspoolControl
             string fecha = getFechaOfPath(pathAlArchivo);
             string mes = fecha.Substring(0, 2);
             string year = fecha.Substring(2, 2);
-            int cantidadFolios = unArchivo.FolioF ?? 0 - unArchivo.FolioI ?? 0 + 1;
+            int folioI = unArchivo.FolioI ?? 0;
+            int folioF = unArchivo.FolioF ?? 0;
+            int cantidadFolios = folioF - folioI + 1;
             fecha = "20" + year + "-" + mes + "-01 00:00:00";
             List<string> pathMDBOriginales = new List<string>();
             pathMDBOriginales.Add(dirC);
@@ -210,7 +210,7 @@ namespace Erosionlunar.MITSistema.VisspoolControl
                 Console.WriteLine("El visspool tiene:" + (dummyCount - 1).ToString() + " y se supone que tiene que tener: " + cantidadFolios.ToString());
                 Environment.Exit(0);
             }
-            string dirVisspool = Path.Combine(Path.GetDirectoryName(pathAlArchivo), "visspool");
+            string dirVisspool = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(pathAlArchivo)), "visspool");
             Directory.CreateDirectory(dirVisspool);
             string dirInical = Path.Combine(dirVisspool, sacarCaracteres(nombreLibro) + mes + year);
             string dirCarpetaArchivos = Path.Combine(dirInical, sacarCaracteres(nombreLibroCorto) + mes + year + "P" + unArchivo.Fraccion);

@@ -157,28 +157,62 @@ namespace Erosionlunar.MITSistema.MailControl
         }
         private void SaveEmailToDisk(MimeMessage message, int index)
         {
-            try
-            {
-                // Generate a unique file name based on the email subject or index
-                string fileName = "mail.eml";
-                string filePath = Path.Combine(folderAllEmails, fileName);
 
-                // Ensure unique file names if there are duplicates
-                int count = 1;
-                while (System.IO.File.Exists(filePath))
-                {
-                    fileName = $"mail({count++}).eml";
-                    filePath = Path.Combine(folderAllEmails, fileName);
-                }
-                // Save the email as an .eml file
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    message.WriteTo(stream);
-                }
-            }
-            catch (Exception ex)
+            // Generate a unique file name based on the email subject or index
+            string fileName = "mail.eml";
+            string filePath = Path.Combine(folderAllEmails, fileName);
+
+            // Ensure unique file names if there are duplicates
+            int count = 1;
+            while (System.IO.File.Exists(filePath))
             {
-                Console.WriteLine($"Failed to save email '{message.Subject}': {ex.Message}");
+                fileName = $"mail({count++}).eml";
+                filePath = Path.Combine(folderAllEmails, fileName);
+            }
+            // Save the email as an .eml file
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                message.WriteTo(stream);
+            }
+        }
+        public void DeleteAllEmails()
+        {
+            using (var client = new ImapClient())
+            {
+                using (var cancel = new CancellationTokenSource())
+                {
+                    client.Connect("imap.gmail.com", 993, true, cancel.Token);
+                    client.AuthenticationMechanisms.Remove("XOAUTH");
+                    client.Authenticate(emailABuscar, tokenConection, cancel.Token);
+
+                    // Delete emails from Inbox
+                    var inbox = client.Inbox;
+                    inbox.Open(FolderAccess.ReadWrite, cancel.Token); // Open with write access for deletion
+
+                    var messages = inbox.Fetch(0, -1, MessageSummaryItems.UniqueId);
+                    foreach (var messageSummary in messages)
+                    {
+                        inbox.AddFlags(messageSummary.UniqueId, MessageFlags.Deleted, true, cancel.Token);
+                    }
+
+                    // Expunge the deleted messages to permanently remove them
+                    inbox.Expunge(cancel.Token);
+
+                    // Delete emails from Sent folder
+                    var sentInbox = client.GetFolder(MailKit.SpecialFolder.Sent);
+                    sentInbox.Open(FolderAccess.ReadWrite, cancel.Token);
+
+                    var messagesSent = sentInbox.Fetch(0, -1, MessageSummaryItems.UniqueId);
+                    foreach (var messageSummary in messagesSent)
+                    {
+                        sentInbox.AddFlags(messageSummary.UniqueId, MessageFlags.Deleted, true, cancel.Token);
+                    }
+
+                    // Expunge the deleted messages to permanently remove them
+                    sentInbox.Expunge(cancel.Token);
+
+                    client.Disconnect(true, cancel.Token);
+                }
             }
         }
         public MemoryStream SaveEmail(string emailId)

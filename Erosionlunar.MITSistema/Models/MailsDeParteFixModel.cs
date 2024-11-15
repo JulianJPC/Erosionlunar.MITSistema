@@ -22,10 +22,10 @@ namespace Erosionlunar.MITSistema.Models
         public MailsDeParteFixModel() { }
         public MailsDeParteFixModel(MailsDeParteModel elMail)
         {
-            idMailsDeParte = elMail.idMailsDeParte ?? 0;
+            idMailsDeParte = elMail.idMailsDeParte;
             numeroP = elMail.numeroP ?? "0";
             tipo = elMail.tipo ?? "0";
-            idNombreYMail = elMail.idNombreYMail ?? 0;
+            idNombreYMail = elMail.idNombreYMail;
             Nombre = "";
             Email = "";
         }

@@ -1,4 +1,5 @@
 ﻿using Erosionlunar.MITSistema.Entities;
+using System.Text.RegularExpressions;
 
 namespace Erosionlunar.MITSistema.Models
 {
@@ -23,6 +24,7 @@ namespace Erosionlunar.MITSistema.Models
         private string terminacionInicial;
         private string ubicacionInicial;
         private LibrosModel elLibro;
+        private double pesoEnDisco;
 
         public int IdArchivoV => IdArchivo;
         public int IdMedioOpticoV => IdMedioOptico;
@@ -42,6 +44,7 @@ namespace Erosionlunar.MITSistema.Models
         public string terminacionInicialV => terminacionInicial;
         public string ubicacionInicialV => ubicacionInicial;
         public LibrosModel elLibroV => elLibro;
+        public double pesoV => pesoEnDisco;
 
         public ArchivosFixModel() { }
         public ArchivosFixModel(string pathAlArchivo) 
@@ -53,23 +56,66 @@ namespace Erosionlunar.MITSistema.Models
         }
         public ArchivosFixModel(ArchivosModel elModel) 
         {
-            IdArchivo = elModel.IdArchivo ?? 0;
-            IdMedioOptico = elModel.IdMedioOptico ?? 0;
-            IdLibro = elModel.IdLibro ?? 0;
+            IdArchivo = elModel.IdArchivo;
+            IdMedioOptico = elModel.IdMedioOptico;
+            IdLibro = elModel.IdLibro;
             Fraccion = elModel.Fraccion ?? 0;
             FolioF = elModel.FolioF ?? 0;
             FolioI = elModel.FolioI ?? 0;
             AsientoI = elModel.AsientoI ?? 0;
             AsientoF = elModel.AsientoF ?? 0;
             HashA = elModel.HashA;
-            Ramificacion = elModel.Ramificacion ?? 0;
-            EsRamaActiva = elModel.EsRamaActiva ?? 0;
+            Ramificacion = elModel.Ramificacion;
+            EsRamaActiva = elModel.EsRamaActiva;
         }
         public void setLibro(LibrosModel elLibroNuevo)
         {
             elLibro = elLibroNuevo;
             nombreLibro = elLibro.NombreL;
             nombreCorto = elLibro.NombreArchivoL;
+        }
+        public void setUbicacion(string ubi)
+        {
+            ubicacionInicial = ubi;
+        }
+        private List<string> getPathVisspool()
+        {
+            var dirCarpeta = Path.GetDirectoryName(ubicacionInicial);
+            var getNameFile = Path.GetFileNameWithoutExtension(ubicacionInicial);
+            var dirCosas = Path.Combine(dirCarpeta, getNameFile);
+            var archivosMdb = Directory.GetFiles(dirCosas).ToList();
+            return archivosMdb;
+        }
+        public void calcularPeso()
+        {
+            FileInfo fileInfo = new FileInfo(ubicacionInicial);
+            long fileSizeInBytes = fileInfo.Length;
+            if (Regex.IsMatch(ubicacionInicial, @"^.*visspool.*$"))
+            {
+                var archivosMdb = getPathVisspool();
+                foreach(string unArch in archivosMdb)
+                {
+                    FileInfo unFileInfo = new FileInfo(unArch);
+                    fileSizeInBytes += unFileInfo.Length;
+                }
+            }
+            double fileSizeInMB = fileSizeInBytes / (1024.0 * 1024.0);
+            pesoEnDisco = fileSizeInMB;
+        }
+
+        public void setIdMO(int elIdMO)
+        {
+            IdMedioOptico = elIdMO;
+        }
+
+        public string getPathEnISO()
+        {
+            string laUbicacion = Path.GetFileName(ubicacionInicial);
+            if(Path.GetExtension(ubicacionInicial).ToLower() == ".mdb")
+            {
+                laUbicacion = @"Libros\" + laUbicacion;
+            }
+            return laUbicacion;
         }
     }
 }

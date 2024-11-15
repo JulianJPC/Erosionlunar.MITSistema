@@ -1,6 +1,5 @@
 ﻿using Erosionlunar.MITSistema.Abstract;
 using Erosionlunar.MITSistema.Entities;
-using Erosionlunar.MITSistema.Interface;
 using Erosionlunar.MITSistema.ManipuladorControl;
 using Erosionlunar.MITSistema.Models;
 using Erosionlunar.MITSistema.ProcesadorControl;
@@ -59,7 +58,7 @@ namespace Erosionlunar.MITSistema.Controllers
                     if(elPreParte == null) { return View("MyError", $"No se encuentra parte asociado al numero: {numeroParte}"); }
                     idEmpresa = elPreParte.idEmpresa ?? 0;
                 }
-                else { idEmpresa = elParte.idEmpresa ?? 0; }
+                else { idEmpresa = elParte.idEmpresa; }
                 
 
                 //los Posibles Nombres Cortos libros
@@ -91,7 +90,7 @@ namespace Erosionlunar.MITSistema.Controllers
                         Regex elRegex = makeRegex(unaInfo.Informacion);
                         foreach (string unaLinea in primerasDiezLineas)
                         {
-                            if (elRegex.IsMatch(unaLinea) && unaInfo.IdLibro != null) { listaIdLibros[i] = unaInfo.IdLibro ?? 0; }
+                            if (elRegex.IsMatch(unaLinea) && unaInfo.IdLibro != null) { listaIdLibros[i] = unaInfo.IdLibro; }
                         }
                     }
                 }
@@ -399,14 +398,14 @@ namespace Erosionlunar.MITSistema.Controllers
         }
         private int getLastIdArchivo()
         {
-            return  _context.Archivos.Max(c => c.IdArchivo) ?? 0;
+            return  _context.Archivos.Max(c => c.IdArchivo);
         }
 
         private int getInicioE(int idEmpresa)
         {
             int inicioE = 0;
             var laEmpresa = _context.Empresas.FirstOrDefault(c => c.IdEmpresa == idEmpresa);
-            if(laEmpresa != null) { inicioE = laEmpresa.IEjercicioE ?? 0; }
+            if(laEmpresa != null) { inicioE = laEmpresa.IEjercicioE; }
             return inicioE;
         }
 
@@ -471,7 +470,7 @@ namespace Erosionlunar.MITSistema.Controllers
             }
             else
             {
-                idEmpresa = parteRaw.idEmpresa ?? 0;
+                idEmpresa = parteRaw.idEmpresa;
             }
             if(idEmpresa != 0)
             {
@@ -490,7 +489,7 @@ namespace Erosionlunar.MITSistema.Controllers
             var parteRaw = _context.Partes.FirstOrDefault(c => c.numeroP == numeroP);
             if (parteRaw != null)
             {
-                idEmpresa = parteRaw.idEmpresa ?? 0;
+                idEmpresa = parteRaw.idEmpresa;
             }
             if (idEmpresa != 0)
             {
@@ -586,7 +585,7 @@ namespace Erosionlunar.MITSistema.Controllers
         {
             int idLibro = 0;
             var libro = _context.Libros.FirstOrDefault(c=> c.NombreArchivoL == nombreC & c.IdEmpresa == idEmpresa);
-            if(libro != null) { idLibro = libro.IdLibro ?? 0; }
+            if(libro != null) { idLibro = libro.IdLibro; }
             return idLibro;
         }
         

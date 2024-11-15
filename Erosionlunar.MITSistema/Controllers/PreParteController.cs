@@ -44,11 +44,30 @@ namespace Erosionlunar.MITSistema.Controllers
         public ActionResult PreParteDinamico()
         {
             EmailSimple controladorMails = new EmailSimple(elToken, elEmailDeBusqueda, pathToFolderEmails);
-            //controladorMails.GetAllMail();
-            List<Models.MailModel> losMails = new List<Models.MailModel>();
+            
+            
             string folderMails = controladorMails.getFolderAll();
+            try
+            {
+                controladorMails.GetAllMail();    
+            }
+            catch (Exception ex) 
+            {
+                return View("MyError", $"Error bajando los Mails: {ex.Message}.");
+            }
+            try
+            {
+                controladorMails.DeleteAllEmails();
+            }
+            catch (Exception ex)
+            {
+                return View("MyError", $"Error eliminando los Mails: {ex.Message}.");
+            }
+            List<Models.MailModel> losMails = new List<Models.MailModel>();
             List<string> emlFiles = Directory.GetFiles(folderMails, "*.eml").ToList();
-            foreach(string pathUnMail in emlFiles)
+
+
+            foreach (string pathUnMail in emlFiles)
             {
                 using (var stream = System.IO.File.OpenRead(pathUnMail))
                 {
@@ -120,8 +139,8 @@ namespace Erosionlunar.MITSistema.Controllers
             {
                 //Preparo PreParteModel
                 PreParteModel elPreParte = new PreParteModel();
-                int numeroPreP = _context.PreParte.Max(p => p.idPreParte) + 1 ?? 0;
-                int numeroP = _context.Partes.Max(p => p.numeroP) + 1 ?? 0;
+                int numeroPreP = _context.PreParte.Max(p => p.idPreParte) + 1;
+                int numeroP = _context.Partes.Max(p => p.numeroP) + 1;
                 DateTimeOffset laFechaPrincipio = DateTime.Now;
                 foreach (MailModel unMail in losMails)
                 {
@@ -148,7 +167,7 @@ namespace Erosionlunar.MITSistema.Controllers
                     var laInfo = _context.InformacionEmpresa.FirstOrDefault(c => c.Informacion == unaDir.Replace("\"", ""));
                     if(laInfo != null)
                     {
-                        int elIdDeLaEmpresas = laInfo.IdEmpresa ?? 0;
+                        int elIdDeLaEmpresas = laInfo.IdEmpresa;
                         if (idEmpresas.Contains(elIdDeLaEmpresas))
                         {
                             int indiceEmp = idEmpresas.IndexOf(elIdDeLaEmpresas);
@@ -338,7 +357,7 @@ namespace Erosionlunar.MITSistema.Controllers
             var maxNParte = _context.Partes.Max(p => p.numeroP);
             var preParteModel = new Models.PreParteFixModel();
             preParteModel.setFechaRecibido(DateTime.Now);
-            preParteModel.setNumeroDeParte(maxNParte + 1 ?? 0);
+            preParteModel.setNumeroDeParte(maxNParte + 1);
             preParteModel.setIdEmpresa(-1);
             return View(preParteModel);
         }
@@ -352,7 +371,7 @@ namespace Erosionlunar.MITSistema.Controllers
             elNuevoPreParte.idEmpresa = stringToInt(Request.Form["idEmpresaV"]);
             elNuevoPreParte.fechaRecibido = stringToDateTimeV(Request.Form["fechaRecibidoV"]).ToString("dd/MM/yyyy");
             elNuevoPreParte.numeroP = stringToInt(Request.Form["numeroPV"]);
-            int numeroIDNuevo = _context.PreParte.Max(p => p.idPreParte) + 1 ?? 0;
+            int numeroIDNuevo = _context.PreParte.Max(p => p.idPreParte) + 1;
             elNuevoPreParte.idPreParte = numeroIDNuevo;
             try
             {
@@ -468,7 +487,7 @@ namespace Erosionlunar.MITSistema.Controllers
                 {
                     _context.MailsDeParte.Remove(mail);
                 }
-                int ultimoId = _context.MailsDeParte.Max(p => p.idMailsDeParte) + 1 ?? 1;
+                int ultimoId = _context.MailsDeParte.Max(p => p.idMailsDeParte) + 1;
                 foreach (var mail in losMailsACrear)
                 {
                     if (mail.numeroP != null)

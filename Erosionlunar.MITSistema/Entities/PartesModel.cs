@@ -8,10 +8,10 @@ namespace Erosionlunar.MITSistema.Entities
     public class PartesModel
     {
         [Key]
-        public int? idParte { get; set; }
-        public int? idTipoParte { get; set; }
-        public int? idEmpresa { get; set; }
-        public int? numeroP { get; set; }
+        public int idParte { get; set; }
+        public int idTipoParte { get; set; }
+        public int idEmpresa { get; set; }
+        public int numeroP { get; set; }
         public string? FechaP { get; set; }
         public string? Comentario { get; set; }
         public string? DestinatariosDireccion { get; set; }
@@ -25,7 +25,7 @@ namespace Erosionlunar.MITSistema.Entities
             idTipoParte = elParte.idTipoParteV;
             idEmpresa = elParte.idEmpresaV;
             numeroP = elParte.numeroPV;
-            FechaP = elParte.FechaPV.ToString("dd/MM/YYYY");
+            FechaP = elParte.FechaPV.ToString("dd/MM/yyyy");
             Comentario = elParte.ComentarioV;
             DestinatariosDireccion = elParte.DestinatariosDireccionV;
             DestinatariosEmail = elParte.DestinatariosEmailV;

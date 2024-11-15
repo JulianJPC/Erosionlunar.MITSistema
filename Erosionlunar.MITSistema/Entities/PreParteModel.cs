@@ -8,8 +8,8 @@ namespace Erosionlunar.MITSistema.Entities
     public class PreParteModel
     {
         [Key]
-        public int? idPreParte { get; set; }
-        public int? numeroP { get; set; }
+        public int idPreParte { get; set; }
+        public int numeroP { get; set; }
         public string? fechaRecibido { get; set; }
         public int? idEmpresa { get; set; }
         public PreParteModel() { }

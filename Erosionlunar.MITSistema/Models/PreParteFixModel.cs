@@ -28,8 +28,8 @@ namespace Erosionlunar.MITSistema.Models
 
         public PreParteFixModel(PreParteModel unPreParte)
         {
-                idPreParte = unPreParte.idPreParte ?? 0;
-                numeroP = unPreParte.numeroP ?? 0;
+                idPreParte = unPreParte.idPreParte;
+                numeroP = unPreParte.numeroP;
                 string arregloF = unPreParte.fechaRecibido ?? "01/01/0001";
                 fechaRecibido = DateTime.ParseExact(arregloF, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 idEmpresa = unPreParte.idEmpresa ?? 0;
@@ -67,7 +67,7 @@ namespace Erosionlunar.MITSistema.Models
         }
         public bool tieneElMail(MailsDeParteModel unMail)
         {
-            int elIdABuscar = unMail.idMailsDeParte ?? 0;
+            int elIdABuscar = unMail.idMailsDeParte;
             bool estaEnMails = false;
             foreach(MailsDeParteFixModel unMailMio in losMails)
             {

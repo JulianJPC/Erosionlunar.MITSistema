@@ -46,3 +46,23 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.table .col-id {
+    width: 10%;
+}
+
+.table .col-location {
+    width: 10%;
+}
+
+.table .col-mo-id {
+    width: 10%;
+}
+
+.table .col-mo-group {
+    width: 10%;
+}
+
+.table .col-mo-name {
+    width: 60%;
+}

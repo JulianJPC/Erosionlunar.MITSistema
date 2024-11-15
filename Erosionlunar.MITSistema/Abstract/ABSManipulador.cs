@@ -1,8 +1,7 @@
-﻿using Erosionlunar.MITSistema.Interface;
-
+﻿
 namespace Erosionlunar.MITSistema.Abstract
 {
-    public abstract class ABSManipulador : IManipuladorArchivos
+    public abstract class ABSManipulador
     {
         public virtual DateTime getFecha(string dirA) { return DateTime.Now; }
         protected List<string> getLineas(string direA, int cantidad)

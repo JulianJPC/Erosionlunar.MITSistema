@@ -1,0 +1,61 @@
+﻿@model List<Erosionlunar.MITSistema.Models.ArchivosFixModel>
+
+@{
+    ViewData["Title"] = "Parte Creacion Medios Opticos 2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Crear Parte 2</h1>
+
+<hr />
+
+<form asp-action="PartesMO2" id="parteForm" asp-controller="Partes" method="post">
+    <input type="submit" value="Continuar" class="btn btn-primary" />
+    <input type="number" value="@ViewBag.elPreParte.idPreParteV" name="elIdPreParte" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-1">
+                    ID archivo
+                </th>
+                <th class="col-1">
+                    Ubicación Archivo
+                </th>
+                <th class="col-1">
+                    MO ID
+                </th>
+                <th class="col-1">
+                    MO Grupo
+                </th>
+                <th class="col-6">
+                    Nombre MO
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i<Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        <input type="number" name="idArchivo[@i]" value="@Model[i].IdArchivoV" />
+                        <p>@Model[i].pesoV MB</p>
+                    </td>
+                    <td>
+                        <input type="text" name="ubicacion[@i]" value="@Model[i].ubicacionInicialV" />
+                        <p>@(System.IO.Path.GetFileName(Model[i].ubicacionInicialV))</p>
+                    </td>
+                    <td>
+                        <input type="number" name="MOID[@i]" value="@(i + 1)" />
+                    </td>
+                    <td>
+                        <input type="number" name="MOGrupo[@i]" value="0" />
+                    </td>
+                    <td>
+                        <input type="text" name="MONombre[@i]" value="@Model[i].nombreLibroV" style="width:100%" />
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+</form>

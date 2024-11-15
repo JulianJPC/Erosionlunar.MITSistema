@@ -1,0 +1,87 @@
+﻿@model List<Erosionlunar.MITSistema.Models.PreParteFixModel>
+
+@{
+    ViewData["Title"] = "Parte Creacion Medios Opticos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Crear Parte</h1>
+
+<hr />
+
+<form asp-action="PartesMO" id="preParteForm" asp-controller="Partes" method="post">
+    <input type="submit" value="Continuar" class="btn btn-primary" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Seleccionar
+                </th>
+                <th>
+                    ID PreParte
+                </th>
+                <th>
+                    Numero Parte
+                </th>
+                <th>
+                    Fecha Recibido
+                </th>
+                <th>
+                    Empresa
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i < Model.Count();i++)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" class="PreParteCheckbox" data-index="@i" />
+                    </td>
+                    <td>
+                        <input name="idPreParteV" type="text" value="@Model[i].idPreParteV" />
+                    </td>
+                    <td>
+                        <input name="numeroPV" type="text" value="@Model[i].numeroPV" />
+                    </td>
+                    <td>
+                        <input name="fechaRV" type="date" value="@(@Model[i].fechaRecibidoV.ToString("yyyy-MM-dd"))" />
+                    </td>
+                    <td>
+                        <input name="nCortoEV" type="text" value="@Model[i].nCortoEV" />
+                        <input name="idEmpresaV" type="hidden" value="@Model[i].idEmpresaV" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>        
+</form>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all checkboxes with the class 'carpetaCheckBox'
+        const checkboxes = document.querySelectorAll(".PreParteCheckbox");
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("click", function () {
+                // Uncheck all checkboxes except the one that was just clicked
+                checkboxes.forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+            });
+        });
+
+        // On form submission, disable all rows except the checked one
+        document.getElementById("preParteForm").addEventListener("submit", function (event) {
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.closest("tr");
+                if (!checkbox.checked) {
+                    // Disable all inputs in the row if the checkbox is not checked
+                    row.querySelectorAll("input").forEach(input => input.disabled = true);
+                }
+                else {
+                    row.querySelectorAll("input").forEach(input => input.disabled = false);
+                }
+            });
+        });
+    });
+</script>

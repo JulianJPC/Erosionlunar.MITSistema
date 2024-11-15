@@ -1,5 +1,6 @@
 ﻿using Erosionlunar.MITSistema.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
@@ -49,10 +50,10 @@ namespace Erosionlunar.MITSistema.Models
         public PartesFixModel() {  }
         public PartesFixModel(PartesModel unParte) 
         {
-            idParte = unParte.idParte ?? 0;
-            idTipoParte = unParte.idTipoParte ?? 0;
-            idEmpresa = unParte.idEmpresa ?? 0;
-            numeroP = unParte.numeroP ?? 0;
+            idParte = unParte.idParte;
+            idTipoParte = unParte.idTipoParte;
+            idEmpresa = unParte.idEmpresa;
+            numeroP = unParte.numeroP;
             FechaP = arregloFecha(unParte.FechaP);
             Comentario = unParte.Comentario;
             DestinatariosDireccion = unParte.DestinatariosDireccion;
@@ -131,6 +132,10 @@ namespace Erosionlunar.MITSistema.Models
         {
             DestinatariosDireccion = laDD;
         }
+        public void setDD(InformacionEmpresaModel laInfo)
+        {
+            DestinatariosDireccion = laInfo.Informacion;
+        }
         public void setDE(string elDE)
         {
             DestinatariosEmail = elDE;
@@ -206,6 +211,19 @@ namespace Erosionlunar.MITSistema.Models
         public int getIDLAdeMO(int indice, int indiceArchivo)
         {
             return losMO[indice].getByIndiceIdLibro(indiceArchivo);
+        }
+        public void setIdTipoParte(int elIdTipoParte)
+        {
+            idTipoParte = elIdTipoParte;
+        }
+        public void addMailInfoDirs(InformacionEmpresaModel laInfo)
+        {
+            if(DestinatariosEmail == null) { DestinatariosEmail = ""; }
+            if (DestinatariosDireccion == null) { DestinatariosDireccion = ""; }
+            string nombreConMail = laInfo.Informacion;
+            var laInfoPartida = nombreConMail.Split("<").ToList();
+            DestinatariosEmail += laInfoPartida[1].Replace(">", "") + ";";
+            DestinatariosDireccion += laInfoPartida[0] + ";";
         }
     }
 }

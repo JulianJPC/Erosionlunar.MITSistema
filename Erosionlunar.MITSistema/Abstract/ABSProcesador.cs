@@ -1,12 +1,11 @@
 ﻿using Erosionlunar.MITSistema.Entities;
-using Erosionlunar.MITSistema.Interface;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Erosionlunar.MITSistema.Abstract
 {
-    public abstract class ABSProcesador : IProcesadorArchivos
+    public abstract class ABSProcesador
     {
         protected int idArchivo;
         protected int idEmpresa;
